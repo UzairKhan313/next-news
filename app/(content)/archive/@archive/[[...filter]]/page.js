@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import NewsList from "@/components/news-list";
-import { DUMMY_NEWS } from "@/dummy-news";
+// import { DUMMY_NEWS } from "@/dummy-news";
 import {
   getAvailableNewsMonths,
   getAvailableNewsYears,
@@ -9,23 +9,23 @@ import {
   getNewsForYearAndMonth,
 } from "@/lib/news";
 
-const FilteredNewsPage = ({ params }) => {
+const FilteredNewsPage = async ({ params }) => {
   const { filter } = params; // filter will return array of all the matches routes.
   const selectedYear = filter?.[0];
   const selectedMonth = filter?.[1];
 
   let news;
-  let links = getAvailableNewsYears();
+  let links = await getAvailableNewsYears();
 
   // Getting news for selected Year
   if (selectedYear && !selectedMonth) {
-    news = getNewsForYear(selectedYear);
+    news = await getNewsForYear(selectedYear);
     links = getAvailableNewsMonths(selectedYear);
   }
 
   // Getting news for selected year and selected month.
   if (selectedYear && selectedMonth) {
-    news = getNewsForYearAndMonth(selectedYear, selectedMonth);
+    news = await getNewsForYearAndMonth(selectedYear, selectedMonth);
     links = [];
   }
 
@@ -37,12 +37,12 @@ const FilteredNewsPage = ({ params }) => {
     newsContent = <NewsList news={news} />;
   }
 
-  // Thowing Error in when the entered URL is not include in our news.
-  // Inlcude also match the type if the type is miss match then it return false even when the item also exist in the array.
+  const availableYears = await getAvailableNewsYears();
+
   if (
-    (selectedYear && !getAvailableNewsYears().includes(+selectedYear)) ||
+    (selectedYear && !availableYears.includes(selectedYear)) ||
     (selectedMonth &&
-      !getAvailableNewsMonths(selectedYear).includes(+selectedMonth))
+      !getAvailableNewsMonths(selectedYear).includes(selectedMonth))
   ) {
     throw new Error("Invalid filter");
   }

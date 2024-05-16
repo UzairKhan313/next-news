@@ -1,11 +1,12 @@
-import React from "react";
-import { DUMMY_NEWS } from "@/dummy-news";
+// import { DUMMY_NEWS } from "@/dummy-news";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { getNewsItem } from "@/lib/news";
 
-const page = ({ params }) => {
+const NewsDetailPage = async ({ params }) => {
   const newsSlug = params.id;
-  const newsItem = DUMMY_NEWS.find((item) => newsSlug === item.slug);
+  // const newsItem = DUMMY_NEWS.find((item) => newsSlug === item.slug);
+  const newsItem = await getNewsItem(newsSlug);
 
   if (!newsItem) {
     notFound();
@@ -24,4 +25,4 @@ const page = ({ params }) => {
   );
 };
 
-export default page;
+export default NewsDetailPage;
